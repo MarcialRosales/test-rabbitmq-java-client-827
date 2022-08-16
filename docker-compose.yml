@@ -1,0 +1,42 @@
+version: "3.6"
+
+networks:
+  rabbitmq:
+
+services:
+  rmq0: &rabbitmq
+    image: pivotalrabbitmq/rabbitmq:master-otp-max
+    networks:
+      rabbitmq:
+        aliases:
+          - rmq
+    ports:
+      - "5676:5671"
+      - "15676:15671"
+    cap_add:
+      - ALL
+    hostname: rmq0
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/conf.d/rabbitmq.conf:ro
+      - ./rmq-0-ssl.conf:/etc/rabbitmq/conf.d/rabbitmq-ssl.conf:ro
+      - ./tls:/etc/cert
+  rmq1:
+    << : *rabbitmq
+    hostname: rmq1
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/conf.d/rabbitmq.conf:ro
+      - ./rmq-1-ssl.conf:/etc/rabbitmq/conf.d/rabbitmq-ssl.conf:ro
+      - ./tls:/etc/cert
+    ports:
+      - "5677:5671"
+      - "15677:15671"
+  rmq2:
+    << : *rabbitmq
+    hostname: rmq2
+    ports:
+      - "5678:5671"
+      - "15678:15671"
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/conf.d/rabbitmq.conf:ro
+      - ./rmq-2-ssl.conf:/etc/rabbitmq/conf.d/rabbitmq-ssl.conf:ro
+      - ./tls:/etc/cert
