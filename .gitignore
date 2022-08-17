@@ -1,2 +1,6 @@
 */.idea/*
 rabbitmq-java-client
+tls-java-app/target/*
+tls-java-app/target
+*.iml
+tls-gen

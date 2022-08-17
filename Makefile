@@ -12,8 +12,9 @@ help:
 
 get-java-client: ## Get RabbitMq java client
 	git clone git@github.com:ogolberg/rabbitmq-java-client.git
+	git checkout dns-round-robin
 build-java-client: ## Build RabbitMq java client
-	@(cd rabbitmq-java-client; make deps; mvn install  -Dmaven.test.skip -P '!setup-test-cluster')
+	@(cd rabbitmq-java-client; make deps; mvn clean install  -Dmaven.test.skip -P '!setup-test-cluster')
 
 deploy-cluster: ## Deploy RabbitMQ cluster
 	@(docker-compose -d up)

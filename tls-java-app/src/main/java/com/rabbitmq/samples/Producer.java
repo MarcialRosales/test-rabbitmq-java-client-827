@@ -60,13 +60,22 @@ public class Producer {
         if (queue == null) queue = "test";
 
         ConnectionFactory factory = setTLS(new ConnectionFactory());
+        factory.setAutomaticRecoveryEnabled(true);
 
         try (Connection connection = factory.newConnection();
             Channel channel = connection.createChannel()) {
             channel.queueDeclare(queue, false, false, false, null);
             String message = "Hello World!";
-            channel.basicPublish("", queue, null, message.getBytes(StandardCharsets.UTF_8));
-            System.out.println(" [x] Sent '" + message + "'");
+            for (;;) {
+                try {
+                    channel.basicPublish("", queue, null, message.getBytes(StandardCharsets.UTF_8));
+                    System.out.println(" [x] Sent '" + message + "'");
+                }catch(com.rabbitmq.client.AlreadyClosedException e) {
+                    System.err.println("Connection closed");
+                }finally {
+                    Thread.sleep(2000);
+                }
+            }
         }
 
     }
